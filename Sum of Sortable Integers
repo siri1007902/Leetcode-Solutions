@@ -1,0 +1,55 @@
+
+class Solution {
+public:
+    int sortableIntegers(vector<int>& nums) {
+        int n = nums.size();
+        int ans = 0;
+
+        for (int k = 1; k <= n; k++) {
+            if (n % k != 0) continue;
+
+            bool possible = true;
+            int previous = 0;
+            bool first = true;
+
+            for (int start = 0; start < n; start += k) {
+                int descents = 0;
+                int rotation = 0;
+
+                for (int j = 0; j < k; j++) {
+                    int current = nums[start + j];
+                    int next = nums[start + (j + 1) % k];
+
+                    if (current > next) {
+                        descents++;
+                        rotation = (j + 1) % k;
+                    }
+                }
+
+                if (descents > 1) {
+                    possible = false;
+                    break;
+                }
+
+                int firstValue = nums[start + rotation];
+                int lastValue = nums[start + (rotation + k - 1) % k];
+
+                if (!first && previous > firstValue) {
+                    possible = false;
+                    break;
+                }
+
+                previous = lastValue;
+                first = false;
+            }
+
+            if (possible) {
+                if (k != 1 || is_sorted(nums.begin(), nums.end())) {
+                    ans += k;
+                }
+            }
+        }
+
+        return ans;
+    }
+};
